@@ -1,0 +1,156 @@
+html {
+  height: 100%;
+  font-size: 16px;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  margin: auto;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.875em;
+}
+h3 {
+  width: 50%;
+  margin: 2% 25% 0;
+  color: #369;
+}
+@media only screen and (max-width: 800px) {
+  h3 {
+    width: 100%;
+    margin: 2% 2% 0;
+  }
+}
+
+.card {
+  width: 50%;
+  font-weight: 700;
+  font-size: 1.25em;
+  border: none;
+  margin: 0 25% 2%;
+  text-align: center;
+}
+
+@media only screen and (max-width: 800px) {
+  .card {
+    width: 100%;
+    margin: 0 0 2%;
+  }
+}
+p {
+  color: #369;
+}
+.temp {
+  color: white;
+  margin: 2% 0;
+  font-size: 1.5em;
+}
+.avg {
+  font-size: 6.25em;
+  margin: 0 25%;
+}
+.days {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.day {
+  float: left;
+  margin: 0 3%;
+}
+.purple {
+  color: #93f;
+}
+.town {
+  text-transform: uppercase;
+  font-size: 1.875em;
+}
+
+form {
+  background-color: white;
+  color: rgb(51, 49, 49);
+  display: flex;
+  justify-content: space-around;
+  padding: 0.125em;
+  border: 0.063em solid currentColor;
+  border-radius: 0.625em;
+  margin: 2% 25% 0;
+}
+@media only screen and (max-width: 800px) {
+  form {
+    margin: 2% 2% 0;
+  }
+}
+sup {
+  font-size: 0.5em;
+}
+
+select {
+  background: transparent;
+  color: darkblue;
+  border: 0.063em solid inherit;
+  border-radius: inherit;
+  padding: 0.438em 0.5em;
+  margin: 0.625em 0 0.625em 0.625em;
+  font-weight: 700;
+}
+
+input[type="search"] {
+  width: 80%;
+  border: none;
+  background: transparent;
+  margin: 0.625em 0 0.625em 0.313em;
+  padding: 0.438em 0.5em;
+  font-size: 0.875em;
+  color: inherit;
+  border: 0.063em solid transparent;
+  border-radius: inherit;
+}
+
+input[type="search"]::placeholder {
+  color: #bbb;
+}
+
+button[type="submit"] {
+  text-indent: -999px;
+  overflow: hidden;
+  width: 2.5em;
+  padding: 0;
+  margin: 0;
+  border: 0.063em solid transparent;
+  border-radius: inherit;
+  background: transparent
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E")
+    no-repeat center;
+  cursor: pointer;
+  opacity: 0.7;
+}
+button[type="submit"]:hover {
+  opacity: 1;
+}
+button[type="submit"]:focus,
+input[type="search"]:focus {
+  box-shadow: 0 0 0.188em 0 #1183d6;
+  border-color: #1183d6;
+  outline: none;
+}
+
+.not-found-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  min-height: 40em;
+}
+.not-found-container h2 {
+  font-size: 3em;
+}
+.not-found-container a {
+  font-size: 1.25em;
+}
+
+#loading {
+  margin-top: 2em;
+}
