@@ -5,6 +5,8 @@ export async function searchResults(
   req: express.Request,
   res: express.Response
 ) {
-  const result = await search(req.body.cities, req.body.countries);
+  const { cities, countries } = req.params;
+  const citiesArray = cities.split(", ");
+  const result = await search(citiesArray, countries);
   res.send(result);
 }
