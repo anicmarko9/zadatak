@@ -19,7 +19,7 @@ const SearchBar = (): JSX.Element => {
     const hardInputString: string = (
       document.getElementById("cities") as HTMLInputElement
     ).value;
-    const cities: string[] = filterString(hardInputString).split(", ");
+    const cities: string = filterString(hardInputString);
     const countries: string = (
       document.getElementById("countries") as HTMLInputElement
     ).value;
