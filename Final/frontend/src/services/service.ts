@@ -4,11 +4,13 @@ import axios from "axios";
 import { Weather, City } from "./../types/type";
 
 export const fetchData = async (data: {
-  cities: string[];
+  cities: string;
   countries: string;
 }): Promise<City[]> => {
   try {
-    const response = await axios.post("http://127.0.0.1:5000/weathers", data);
+    const response = await axios.get(
+      `http://127.0.0.1:5000/weathers/${data.cities}/${data.countries}`
+    );
     return response.data.weather;
   } catch (error) {
     console.error("Server is offline!", error);
