@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { Weather } from "./../types/type";
 
-const Results = ({ weathers }): JSX.Element => {
+const Results = ({ weathers }: { weathers: Weather[] }): JSX.Element => {
   const colorChange = (gradientEndpoints: string): void => {
     document.body.style.background = `linear-gradient(to right bottom, ${gradientEndpoints}) no-repeat fixed`;
   };
@@ -18,7 +18,7 @@ const Results = ({ weathers }): JSX.Element => {
             {colorChange(weathers[0].gradientColors.join(", "))}
             {!city.error ? (
               <Fragment key={index}>
-                <p className="purple town" id={city.gradientColors.join(", ")}>
+                <p className="town" id={city.gradientColors.join(", ")}>
                   {city.name}
                 </p>
                 <p>{city.date}</p>
@@ -31,6 +31,7 @@ const Results = ({ weathers }): JSX.Element => {
                     <Fragment key={index}>
                       <div className="day">
                         <p>{day}</p>
+                        <img src={city.img[index]} alt="Icon" />
                         <p className="temp">
                           {city.temp[index]}
                           <sup>&#8451;</sup>
@@ -41,7 +42,7 @@ const Results = ({ weathers }): JSX.Element => {
                 </div>
               </Fragment>
             ) : (
-              <p>{city.error}</p>
+              <p className="error">{city.error}</p>
             )}
           </>
         </fieldset>

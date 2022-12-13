@@ -1,5 +1,5 @@
 import { getDate, gradientColor } from "../features/helper";
-import { CITIES, COUNTRIES, DAYS } from "../mocks/mock";
+import { COUNTRIES, DAYS } from "../mocks/mock";
 import axios from "axios";
 import { Weather, City } from "./../types/type";
 
@@ -9,27 +9,27 @@ export const fetchData = async (data: {
 }): Promise<City[]> => {
   try {
     const response = await axios.get(
-      `http://127.0.0.1:5000/weathers/${data.cities}/${data.countries}`
+      `http://localhost:5000/weathers/${data.cities}/${data.countries}`
     );
-    return response.data.weather;
+    return response.data;
   } catch (error) {
-    console.error("Server is offline!", error);
+    console.log("Server is offline!");
   }
 };
 
 export const checkCity = (city: City, country: string): Weather => {
   if (
-    !CITIES.includes(city.name) ||
-    !COUNTRIES.includes(country) ||
-    city.temps.length < 20
+    !COUNTRIES.some((el) => el.code === country) ||
+    !COUNTRIES.some((el) => el.cities.includes(city.name)) ||
+    !(city.temps.length > 0)
   ) {
     let msg = `City: [${city.name}] isn't available, or it is not in this country: [${country}].`;
     console.log(msg);
     return {
       error: msg,
-      gradientColors: ["#6cf", "#fc6"],
+      gradientColors: ["#39f", "#f93"],
       // avg temp = 90 just so it will be sorted as last element later on...
-      dblAvgTemp: 90,
+      dblAvgTemp: 900,
     };
   } else {
     let temperatures: { temp: number[]; avgTemp: number; dblAvgTemp: number } =
@@ -44,6 +44,7 @@ export const checkCity = (city: City, country: string): Weather => {
       dayName: dayInWeek.dayName,
       date: getNextFiveDays(city),
       gradientColors: getGradientColors(temperatures.temp),
+      img: getNextFiveImages(city.img),
       error: null,
     };
   }
@@ -64,10 +65,10 @@ const calculateTemperatures = (
   let dblAvgTemp: number;
   let br: number = 0;
   for (let i: number = 0; i < city.temps.length / 8; i++) {
-    // loops 5 times
+    // Every day
     let s: number = 0;
     for (let j: number = 0; j < city.temps.length / 5; j++) {
-      //loops 8 times
+      // Every 3 hours
       s += city.temps[br++];
     }
     temp[i] = Math.round(s / 8);
@@ -82,6 +83,7 @@ const getDay = (city: City): { day: number[]; dayName: string[] } => {
   let day: number[] = [];
   let dayName: string[] = [];
   for (let i: number = 0; i < city.days.length / 8; i++) {
+    // 5 loops for 5 days
     day[i] = new Date().getDay() + i;
     // if day goes from Saturday to Sunday (US Format)
     if (day[i] > 6) {
@@ -111,4 +113,11 @@ const getGradientColors = (temp: number[]): string[] => {
     gradientColors.push(gradientColor(temp));
   });
   return gradientColors;
+};
+
+const getNextFiveImages = (img: string[]): string[] => {
+  const fiveImg: string[] = [];
+  for (let i: number = 0; i < img.length; i += 8)
+    fiveImg.push(`https://openweathermap.org/img/wn/${img[i]}d@2x.png`);
+  return fiveImg;
 };

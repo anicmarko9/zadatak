@@ -1,18 +1,21 @@
-export const CITIES: string[] = [
-  "Belgrade",
-  "Novi Sad",
-  "Niš",
-  "Sydney",
-  "Perth",
-  "Adelaide",
-  "Los Angeles",
-  "New York",
-  "Houston",
-  "Salvador",
-  "Rio de Janeiro",
-  "Manaus",
+export const COUNTRIES: { code: string; cities: string[] }[] = [
+  {
+    code: "RS",
+    cities: ["Belgrade", "Novi Sad", "Niš"],
+  },
+  {
+    code: "AU",
+    cities: ["Sydney", "Perth", "Adelaide"],
+  },
+  {
+    code: "US",
+    cities: ["Los Angeles", "New York", "Houston"],
+  },
+  {
+    code: "BR",
+    cities: ["Salvador", "Rio de Janeiro", "Manaus"],
+  },
 ];
-export const COUNTRIES: string[] = ["RS", "AU", "US", "BR"];
 export const DAYS: string[] = [
   "Sunday",
   "Monday",

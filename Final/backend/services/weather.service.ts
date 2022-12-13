@@ -5,23 +5,26 @@ const APIKEY: string = process.env.OPEN_WEATHER_KEY;
 const API: string = process.env.API;
 
 export const search = async (
-  cities: string[],
+  cities: string,
   country: string
-): Promise<any> => {
+): Promise<City[]> => {
+  //remove duplicates in an array
+  const citiesArray: string[] = cities.split(", ");
+  const uniqueCities: string[] = [...new Set(citiesArray)];
+
   let all: Promise<void>[] = [];
   let weather: City[] = [];
 
   console.log();
   console.time("\nFetched all cities concurrently in");
-  // fetch data for one or more cities and store them into an array: "all"
-  cities.forEach((city: string) => {
+
+  uniqueCities.forEach((city: string) => {
     all.push(resolvePromise(city, country, weather));
   });
   await Promise.all(all);
+
   console.timeEnd("\nFetched all cities concurrently in");
-  return {
-    weather,
-  };
+  return weather;
 };
 
 const resolvePromise = async (
@@ -32,9 +35,10 @@ const resolvePromise = async (
   let start: number = new Date().getTime(); // pocetak [ms]
   const city: City = await fetchCity(cityName, country);
   weather.push(city);
-  console.log(
-    `Fetched ${cityName} in: ${new Date().getTime() - start}ms` // kraj [ms]
-  );
+  if (city.temps.length > 0)
+    console.log(
+      `Fetched ${cityName} in: ${new Date().getTime() - start}ms` // kraj [ms]
+    );
 };
 
 const fetchCity = async (cityName: string, country: string): Promise<City> => {
@@ -49,10 +53,14 @@ const fetchCity = async (cityName: string, country: string): Promise<City> => {
     const days: string[] = res.data.list.map(
       (el: { dt_txt: string }) => el.dt_txt
     );
+    const img: string[] = res.data.list.map(
+      (el: { weather: { icon: string }[] }) => el.weather[0].icon.slice(0, 2)
+    );
     const city: City = {
       name,
       temps,
       days,
+      img,
     };
     return city;
   } catch (err) {
@@ -63,6 +71,7 @@ const fetchCity = async (cityName: string, country: string): Promise<City> => {
       name: cityName,
       temps: [],
       days: [],
+      img: [],
     };
     return city;
   }

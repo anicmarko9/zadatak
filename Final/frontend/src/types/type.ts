@@ -7,10 +7,12 @@ export type Weather = {
   dayName?: string[];
   date?: string;
   gradientColors: string[];
+  img?: string[];
   error: string;
 };
 export type City = {
   name: string;
   temps: number[];
   days: string[];
+  img: string[];
 };
