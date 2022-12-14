@@ -18,11 +18,7 @@ export const fetchData = async (data: {
 };
 
 export const checkCity = (city: City, country: string): Weather => {
-  if (
-    !COUNTRIES.some((el) => el.code === country) ||
-    !COUNTRIES.some((el) => el.cities.includes(city.name)) ||
-    !(city.temps.length > 0)
-  ) {
+  if (!(city.temps.length > 0)) {
     let msg = `City: [${city.name}] isn't available, or it is not in this country: [${country}].`;
     console.log(msg);
     return {

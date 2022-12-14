@@ -1,5 +1,6 @@
 import { City } from "./../types/weather.type";
 import axios from "axios";
+import { COUNTRIES } from "./../../frontend/src/mocks/mock";
 
 const APIKEY: string = process.env.OPEN_WEATHER_KEY;
 const API: string = process.env.API;
@@ -43,6 +44,12 @@ const resolvePromise = async (
 
 const fetchCity = async (cityName: string, country: string): Promise<City> => {
   try {
+    if (
+      !COUNTRIES.some(
+        (el) => el.cities.includes(cityName) && el.code === country
+      )
+    )
+      throw "unavailable";
     const res = await axios.get(
       `${API}data/2.5/forecast?q=${cityName},${country}&units=metric&appid=${APIKEY}`
     );
@@ -56,23 +63,23 @@ const fetchCity = async (cityName: string, country: string): Promise<City> => {
     const img: string[] = res.data.list.map(
       (el: { weather: { icon: string }[] }) => el.weather[0].icon.slice(0, 2)
     );
-    const city: City = {
+    var city: City = {
       name,
       temps,
       days,
       img,
     };
-    return city;
   } catch (err) {
     console.log(
-      `City: [${cityName}] isn't available, or it is not in this country: [${country}].\n`
+      `City: [${cityName}] is ${err}, or it is not in this country: [${country}].`
     );
-    const city: City = {
+    var city: City = {
       name: cityName,
       temps: [],
       days: [],
       img: [],
     };
+  } finally {
     return city;
   }
 };
