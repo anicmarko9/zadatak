@@ -1,7 +1,8 @@
 import React, { Fragment } from "react";
+import { Link } from "react-router-dom";
 import { Weather } from "./../types/type";
 
-const Results = ({ weathers }: { weathers: Weather[] }): JSX.Element => {
+const Results = ({ weathers }): JSX.Element => {
   const colorChange = (gradientEndpoints: string): void => {
     document.body.style.background = `linear-gradient(to right bottom, ${gradientEndpoints}) no-repeat fixed`;
   };
@@ -18,9 +19,11 @@ const Results = ({ weathers }: { weathers: Weather[] }): JSX.Element => {
             {colorChange(weathers[0].gradientColors.join(", "))}
             {!city.error ? (
               <Fragment key={index}>
-                <p className="town" id={city.gradientColors.join(", ")}>
-                  {city.name}
-                </p>
+                <Link to={`/weathers/${city.country}`}>
+                  <p className="town" id={city.gradientColors.join(", ")}>
+                    {city.name}
+                  </p>
+                </Link>
                 <p>{city.date}</p>
                 <p className="temp avg">
                   {city.avgTemp}

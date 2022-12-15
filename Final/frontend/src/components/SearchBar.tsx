@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { filterString } from "../features/helper";
-import { checkCity, compare, fetchData } from "../services/service";
+import { getWeathers } from "../services/service";
 import { COUNTRIES } from "../mocks/mock";
 import Results from "./Results";
 import React from "react";
-import { Weather, City } from "./../types/type";
+import { Weather } from "./../types/type";
 import Table from "./Table";
 
 const SearchBar = (): JSX.Element => {
@@ -15,8 +15,7 @@ const SearchBar = (): JSX.Element => {
     e.preventDefault();
     setLoading(true);
 
-    // Definisanje ulaza
-    const weathersArray: Weather[] = [];
+    // ------ Definisanje ulaza ------
     const hardInputString: string = (
       document.getElementById("cities") as HTMLInputElement
     ).value;
@@ -24,16 +23,9 @@ const SearchBar = (): JSX.Element => {
     const countries: string = (
       document.getElementById("countries") as HTMLInputElement
     ).value;
-    // Definisanje ulaza
+    // ------ Definisanje ulaza ------
 
-    const citiesArray: City[] = await fetchData({ cities, countries });
-
-    if (citiesArray) {
-      citiesArray.forEach((city: City) => {
-        weathersArray.push(checkCity(city, countries));
-      });
-      weathersArray.sort(compare);
-    }
+    const weathersArray: Weather[] = await getWeathers({ cities, countries });
 
     setWeathers(weathersArray);
     setLoading(false);

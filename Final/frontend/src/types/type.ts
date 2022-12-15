@@ -8,6 +8,7 @@ export type Weather = {
   date?: string;
   gradientColors: string[];
   img?: string[];
+  country: string;
   error: string;
 };
 export type City = {

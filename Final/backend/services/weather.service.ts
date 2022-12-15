@@ -5,7 +5,7 @@ import { COUNTRIES } from "./../../frontend/src/mocks/mock";
 const APIKEY: string = process.env.OPEN_WEATHER_KEY;
 const API: string = process.env.API;
 
-export const search = async (
+export const searchForecast = async (
   cities: string,
   country: string
 ): Promise<City[]> => {
@@ -17,14 +17,16 @@ export const search = async (
   let weather: City[] = [];
 
   console.log();
-  console.time("\nFetched all cities concurrently in");
+  if (uniqueCities.length > 1)
+    console.time("\nFetched all cities concurrently in");
 
   uniqueCities.forEach((city: string) => {
     all.push(resolvePromise(city, country, weather));
   });
   await Promise.all(all);
 
-  console.timeEnd("\nFetched all cities concurrently in");
+  if (uniqueCities.length > 1)
+    console.timeEnd("\nFetched all cities concurrently in");
   return weather;
 };
 

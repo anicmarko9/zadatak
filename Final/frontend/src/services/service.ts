@@ -1,15 +1,30 @@
 import { getDate, gradientColor } from "../features/helper";
-import { COUNTRIES, DAYS } from "../mocks/mock";
+import { DAYS } from "../mocks/mock";
 import axios from "axios";
 import { Weather, City } from "./../types/type";
 
-export const fetchData = async (data: {
+export const getWeathers = async (data: {
+  cities: string;
+  countries: string;
+}): Promise<Weather[]> => {
+  const weathersArray: Weather[] = [];
+  const citiesArray: City[] = await fetchData(data);
+  if (citiesArray) {
+    citiesArray.forEach((city: City) => {
+      weathersArray.push(checkCity(city, data.countries));
+    });
+    weathersArray.sort(compare);
+  }
+  return weathersArray;
+};
+
+const fetchData = async (data: {
   cities: string;
   countries: string;
 }): Promise<City[]> => {
   try {
     const response = await axios.get(
-      `http://localhost:5000/weathers/${data.cities}/${data.countries}`
+      `http://localhost:5000/weathers/forecast?cities=${data.cities}&countries=${data.countries}`
     );
     return response.data;
   } catch (error) {
@@ -26,6 +41,7 @@ export const checkCity = (city: City, country: string): Weather => {
       gradientColors: ["#39f", "#f93"],
       // avg temp = 90 just so it will be sorted as last element later on...
       dblAvgTemp: 900,
+      country,
     };
   } else {
     let temperatures: { temp: number[]; avgTemp: number; dblAvgTemp: number } =
@@ -41,12 +57,14 @@ export const checkCity = (city: City, country: string): Weather => {
       date: getNextFiveDays(city),
       gradientColors: getGradientColors(temperatures.temp),
       img: getNextFiveImages(city.img),
+      country,
       error: null,
     };
   }
 };
 
-export const compare = (a: Weather, b: Weather): number => {
+// ascending from lowest to highest
+const compare = (a: Weather, b: Weather): number => {
   return a.dblAvgTemp - b.dblAvgTemp;
 };
 

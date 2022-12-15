@@ -5,15 +5,15 @@ export const COUNTRIES: { code: string; cities: string[] }[] = [
   },
   {
     code: "AU",
-    cities: ["Sydney", "Perth", "Adelaide"],
+    cities: ["Sydney", "Perth", "Adelaide", "Canberra"],
   },
   {
     code: "US",
-    cities: ["Los Angeles", "New York", "Houston"],
+    cities: ["Los Angeles", "New York", "Houston", "Washington D.C."],
   },
   {
     code: "BR",
-    cities: ["Salvador", "Rio de Janeiro", "Manaus"],
+    cities: ["Salvador", "Rio de Janeiro", "Manaus", "Brasília"],
   },
 ];
 export const DAYS: string[] = [
