@@ -4,8 +4,9 @@
   "description": "Weather App !",
   "main": "server.ts",
   "scripts": {
-    "start": "ts-node ./server.ts",
-    "start:dev": "ts-node-dev --respawn ./server.ts",
+    "dev": "ts-node ./server.ts",
+    "start": "ts-node build/backend/server.js",
+    "build": "tsc -p .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Marko Anic",

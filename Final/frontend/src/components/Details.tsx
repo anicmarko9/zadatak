@@ -9,6 +9,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import Results from "./Results";
 import { checkCity } from "../services/service";
 
+//ovde
 const queryClient: QueryClient = new QueryClient();
 
 export default function Details(): JSX.Element {

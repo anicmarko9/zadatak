@@ -15,7 +15,19 @@ process.on("uncaughtException", (err: Error) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cors());
+app.use(function (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "OPTIONS, POST, GET, PUT, DELETE");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 // Set security HTTP headers
 app.use(helmet());
@@ -26,16 +38,15 @@ const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   message: "Too many requests from this IP, please try again in an hour!",
 });
-app.use("/weathers", limiter);
 
-app.use("/weathers", weatherRouter);
+app.use("/weathers", limiter, weatherRouter);
 
 app.use(
   (
     err: { statusCode: number; message: string; stack: string },
     req: express.Request,
     res: express.Response,
-    next: any
+    next: express.NextFunction
   ) => {
     const statusCode: number = err.statusCode || 500;
     console.error(err.message, err.stack);
@@ -44,8 +55,10 @@ app.use(
   }
 );
 
-app.use((req: express.Request, res: express.Response, next: any) => {
-  res.send({ error: "Page not found!" });
-});
+app.use(
+  (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    res.send({ error: "Page not found!" });
+  }
+);
 
 export default app;
