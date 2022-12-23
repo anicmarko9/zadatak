@@ -11,7 +11,9 @@ const SearchBar = (): JSX.Element => {
   const [weathers, setWeathers] = useState<Weather[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
+  const handleSubmit = async (e: {
+    preventDefault: () => void;
+  }): Promise<void> => {
     e.preventDefault();
     setLoading(true);
 

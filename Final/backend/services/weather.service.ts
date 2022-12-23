@@ -1,33 +1,41 @@
 import { City } from "./../types/weather.type";
 import axios from "axios";
 import { COUNTRIES } from "./../../frontend/src/mocks/mock";
+import { Request, Response, NextFunction } from "express";
 
 const APIKEY: string = process.env.OPEN_WEATHER_KEY;
 const API: string = process.env.API;
 
 export const searchForecast = async (
-  cities: string,
-  country: string
-): Promise<City[]> => {
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { cities, countries } = req.query;
   //remove duplicates in an array
-  const citiesArray: string[] = cities.split(", ");
+  const citiesArray: string[] = cities.toString().split(", ");
   const uniqueCities: string[] = [...new Set(citiesArray)];
 
   let all: Promise<void>[] = [];
   let weather: City[] = [];
 
-  console.log();
-  if (uniqueCities.length > 1)
+  if (uniqueCities.length > 1) {
     console.time("\nFetched all cities concurrently in");
+    console.log(
+      "-------------------------------------------------------------"
+    );
+  }
 
   uniqueCities.forEach((city: string) => {
-    all.push(resolvePromise(city, country, weather));
+    all.push(resolvePromise(city, countries.toString().toUpperCase(), weather));
   });
   await Promise.all(all);
 
   if (uniqueCities.length > 1)
     console.timeEnd("\nFetched all cities concurrently in");
-  return weather;
+  res.status(200).json({
+    weather,
+  });
 };
 
 const resolvePromise = async (
@@ -44,7 +52,10 @@ const resolvePromise = async (
     );
 };
 
-const fetchCity = async (cityName: string, country: string): Promise<City> => {
+export const fetchCity = async (
+  cityName: string,
+  country: string
+): Promise<City> => {
   try {
     if (
       !COUNTRIES.some(

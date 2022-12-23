@@ -1,25 +1,19 @@
 import { searchForecast } from "../services/weather.service";
 import { searchCountryDetails } from "../services/country.service";
-import * as express from "express";
-import { City, Country } from "../types/weather.type";
+import { Request, Response, NextFunction } from "express";
 
 export async function searchWeathers(
-  req: express.Request,
-  res: express.Response
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) {
-  const { cities, countries } = req.query;
-  const result: City[] = await searchForecast(
-    cities.toString(),
-    countries.toString().toUpperCase()
-  );
-  res.send(result);
+  await searchForecast(req, res, next);
 }
 
 export async function searchCountry(
-  req: express.Request,
-  res: express.Response
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) {
-  const { countryCode } = req.query;
-  const country: Country = await searchCountryDetails(countryCode.toString());
-  res.send(country);
+  await searchCountryDetails(req, res, next);
 }

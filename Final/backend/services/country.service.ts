@@ -1,40 +1,50 @@
 import { City, Country } from "../types/weather.type";
 import axios from "axios";
-import { searchForecast } from "./weather.service";
+import { fetchCity } from "./weather.service";
 import { COUNTRIES } from "../../frontend/src/mocks/mock";
+import { Request, Response, NextFunction } from "express";
+import AppError from "../utils/AppError";
 
 //API_REST=https://restcountries.com/v3.1/alpha/
 
 export const searchCountryDetails = async (
-  countryCode: string
-): Promise<Country> => {
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { countryCode } = req.query;
+
+  if (countryCode.length !== 2)
+    return next(
+      new AppError("Code length should be equal to 2 characters!", 400)
+    );
+  if (!COUNTRIES.some((el) => el.code === countryCode))
+    return next(new AppError("Country is unavailable!", 400));
+
+  console.log("-------------------------------------------------------------");
   console.time("\nFetched all data synchronously in");
   let start: number = new Date().getTime();
-  const country: Country = await fetchCountry(countryCode);
-  if (!country.error) {
-    console.log(
-      `\nFetched ${country.name} in: ${new Date().getTime() - start}ms` // kraj [ms]
-    );
-    const city: City[] = await searchForecast(
-      country.capitalCity,
-      countryCode.toUpperCase()
-    );
-    country.forecast = city[0];
-  } else {
-    console.log(country.error);
-  }
+
+  const country: Country = await fetchCountry(countryCode.toString());
+
+  console.log(
+    `Fetched ${country.name} in: ${new Date().getTime() - start}ms` // kraj [ms]
+  );
+  const city: City = await fetchCity(
+    country.capitalCity,
+    countryCode.toString().toUpperCase()
+  );
+  country.forecast = city;
   console.timeEnd("\nFetched all data synchronously in");
-  console.log("-------------------------------------------------------------");
-  return country;
+
+  res.status(200).json({
+    status: "success",
+    country,
+  });
 };
 
 const fetchCountry = async (countryCode: string) => {
   try {
-    if (
-      countryCode.length !== 2 ||
-      !COUNTRIES.some((el) => el.code === countryCode)
-    )
-      throw "Code length should be equal to 2 characters, or country is unavailabe!";
     const res = await axios.get(`${process.env.API_REST}${countryCode}`);
     var country: Country = {
       name: res.data[0].name.common,
@@ -52,11 +62,8 @@ const fetchCountry = async (countryCode: string) => {
       flagUrl: res.data[0].flags.png,
       error: null,
     };
-  } catch (err) {
-    var country: Country = {
-      error: err,
-    };
-  } finally {
     return country;
+  } catch (err) {
+    console.log(err);
   }
 };

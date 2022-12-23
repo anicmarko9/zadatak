@@ -1,10 +1,13 @@
 import * as express from "express";
-const app = express();
+const app: express.Express = express();
 import * as bodyParser from "body-parser";
+import * as cookieParser from "cookie-parser";
 import weatherRouter from "./routes/weather.route";
-import * as cors from "cors";
-import rateLimit from "express-rate-limit";
+import userRouter from "./routes/user.route";
+import rateLimit, { RateLimitRequestHandler } from "express-rate-limit";
 import helmet from "helmet";
+import * as mongoSanitize from "express-mongo-sanitize";
+import AppError from "./utils/AppError";
 
 process.on("uncaughtException", (err: Error) => {
   console.log("Uncaught Exception!  Shutting down...");
@@ -12,8 +15,14 @@ process.on("uncaughtException", (err: Error) => {
   process.exit(1);
 });
 
+// Set security HTTP headers
+app.use(helmet());
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+app.use(mongoSanitize());
 
 app.use(function (
   req: express.Request,
@@ -29,17 +38,17 @@ app.use(function (
   next();
 });
 
-// Set security HTTP headers
-app.use(helmet());
-
 // Limit requests from same API
-const limiter = rateLimit({
+const limiter: RateLimitRequestHandler = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 1000,
   message: "Too many requests from this IP, please try again in an hour!",
 });
-
-app.use("/weathers", limiter, weatherRouter);
+//prvo ide ovo
+app.use("/", limiter);
+//pa ovo
+app.use("/weathers", weatherRouter);
+app.use("/users", userRouter);
 
 app.use(
   (
@@ -57,7 +66,14 @@ app.use(
 
 app.use(
   (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    res.send({ error: "Page not found!" });
+    const err: AppError = new AppError(
+      `Route ${req.originalUrl} is unavailable!`,
+      404
+    );
+    res.status(404).json({
+      status: err["status"],
+      message: err["message"],
+    });
   }
 );
 

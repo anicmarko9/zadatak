@@ -69,7 +69,7 @@ a {
   text-decoration: none;
 }
 
-form {
+.inputForm {
   background-color: rgba(255, 255, 255, 0.9);
   color: rgb(51, 49, 49);
   display: flex;
@@ -80,7 +80,7 @@ form {
   margin: 1% 25% 0;
 }
 @media only screen and (max-width: 800px) {
-  form {
+  .inputForm {
     margin: 1% 2% 0;
   }
 }
@@ -88,7 +88,7 @@ sup {
   font-size: 0.5em;
 }
 
-select {
+.inputForm select {
   background: transparent;
   color: #2d033b;
   border: 0.063em solid #c147e9;
@@ -98,7 +98,7 @@ select {
   font-weight: 700;
 }
 
-input[type="search"] {
+.inputForm input[type="search"] {
   width: 80%;
   border: none;
   background: transparent;
@@ -110,11 +110,11 @@ input[type="search"] {
   border-radius: inherit;
 }
 
-input[type="search"]::placeholder {
+.inputForm input[type="search"]::placeholder {
   color: #bbb;
 }
 
-button[type="submit"] {
+.inputForm button[type="submit"] {
   text-indent: -999px;
   overflow: hidden;
   width: 2.5em;
@@ -128,11 +128,11 @@ button[type="submit"] {
   cursor: pointer;
   opacity: 0.7;
 }
-button[type="submit"]:hover {
+.inputForm button[type="submit"]:hover {
   opacity: 1;
 }
-button[type="submit"]:focus,
-input[type="search"]:focus {
+.inputForm button[type="submit"]:focus,
+.inputForm input[type="search"]:focus {
   box-shadow: 0 0 0.188em 0 #1183d6;
   border-color: #1183d6;
   outline: none;
@@ -293,4 +293,119 @@ tbody tr:nth-child(even) {
 
 .error {
   color: #2d033b;
+}
+/* NavBar */
+
+.topnav {
+  background-color: #810ca8;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.topnav a {
+  color: #f2f2f2;
+  text-align: center;
+}
+.topnav a.not-brand {
+  padding: 1em 1em;
+  text-decoration: none;
+  font-size: 1.125em;
+}
+.topnav a:hover {
+  background-color: rgba(229, 184, 244, 0.2);
+}
+#green {
+  background-color: #2d033b;
+}
+
+/* Login form */
+
+.colm-form {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin-top: 5%;
+}
+.colm-form .form-container {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 0.625em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+  padding: 1.25rem;
+  max-width: 25rem;
+}
+
+.colm-form .form-container input,
+.colm-form .form-container .btn-login {
+  width: 100%;
+  margin: 0.313rem 0;
+  height: 2.813rem;
+  vertical-align: middle;
+  font-size: 1rem;
+}
+.colm-form .form-container input {
+  width: 95%;
+}
+
+.colm-form .form-container input {
+  border: 1px solid #dddfe2;
+  color: #1d2129;
+  padding: 0 0.5rem;
+  outline: none;
+}
+
+.colm-form .form-container input:focus {
+  border-color: #1877f2;
+  box-shadow: 0 0 0 2px #e7f3ff;
+}
+
+.colm-form .form-container .btn-login {
+  background-color: #810ca8;
+  border: transparent solid 1px;
+  border-radius: 6px;
+  font-size: 1.25rem;
+  padding: 0 1rem;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+.colm-form .form-container .btn-login:hover {
+  background-color: white;
+  color: #810ca8;
+  border: #810ca8 solid 1px;
+}
+
+.colm-form .form-container a {
+  display: block;
+  color: #1877f2;
+  font-size: 0.875rem;
+  text-decoration: none;
+  padding: 10px 0 20px;
+  border-bottom: 1px solid #dadde1;
+}
+
+.colm-form .form-container a:hover {
+  text-decoration: underline;
+}
+
+.colm-form .form-container .btn-new {
+  background-color: #2d033b;
+  border: transparent solid 1px;
+  border-radius: 6px;
+  font-size: 1.063rem;
+  line-height: 3rem;
+  padding: 0 1rem;
+  color: #ffffff;
+  font-weight: 700;
+  margin-top: 1.25rem;
+  cursor: pointer;
+}
+.colm-form .form-container .btn-new:hover {
+  background-color: #fff;
+  color: #2d033b;
+  border: #2d033b solid 1px;
 }

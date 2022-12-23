@@ -1,5 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
+import mongoose from "mongoose";
 
 process.on("uncaughtException", (err: Error) => {
   console.log("Uncaught Exception!  Shutting down...");
@@ -10,6 +11,13 @@ process.on("uncaughtException", (err: Error) => {
 import app from "./app";
 import { Server } from "http";
 import { getHostAddress } from "./utils/network.util";
+
+const DataBase = process.env.DATABASE.replace(
+  "<PASSWORD>",
+  process.env.DATABASE_PASSWORD
+);
+mongoose.set("strictQuery", true);
+mongoose.connect(DataBase).then(() => console.log("DataBase connected!"));
 
 let port: number = parseInt(process.env.PORT) || 5000;
 let host: string = process.env.HOST || getHostAddress();

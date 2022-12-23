@@ -26,7 +26,7 @@ const fetchData = async (data: {
     const response = await axios.get(
       `http://localhost:5000/weathers/forecast?cities=${data.cities}&countries=${data.countries}`
     );
-    return response.data;
+    return response.data.weather;
   } catch (error) {
     console.log("Server is offline!");
   }
