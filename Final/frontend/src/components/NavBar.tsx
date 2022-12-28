@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { logout } from "../services/auth";
 import { User } from "../types/userTypes";
 const user: User = JSON.parse(window.localStorage.getItem("user"));
-
+console.log(window.document.cookie);
 const NavBar = (): JSX.Element => {
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
@@ -10,7 +10,7 @@ const NavBar = (): JSX.Element => {
     await logout();
   };
   useEffect(() => {
-    if (user._id) {
+    if (user) {
       setLoggedIn(true);
     } else {
       setLoggedIn(false);
