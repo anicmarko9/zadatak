@@ -11,13 +11,6 @@ body {
   font-size: 0.875em;
 }
 
-@media only screen and (max-width: 800px) {
-  h3 {
-    width: 100%;
-    margin: 2% 2% 0;
-  }
-}
-
 .card {
   width: 50%;
   font-weight: 700;
@@ -50,6 +43,9 @@ fieldset p {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
+}
+label {
+  color: white;
 }
 
 .day {
@@ -315,21 +311,33 @@ tbody tr:nth-child(even) {
   text-decoration: none;
   font-size: 1.125em;
 }
-.topnav a:hover {
+.topnav a.not-brand:hover {
   background-color: rgba(229, 184, 244, 0.2);
 }
+.topnav div:nth-child(1):hover {
+  background-color: rgba(229, 184, 244, 0.2);
+}
+
 #green {
   background-color: #2d033b;
+}
+#green:hover {
+  background-color: rgba(45, 3, 59, 0.2);
 }
 
 /* Login form */
 
+.forgot-password,
+.reset-password,
 .colm-form {
   display: flex;
   justify-content: center;
   text-align: center;
   margin-top: 5%;
 }
+
+.forgot-password form,
+.reset-password form,
 .colm-form .form-container {
   background-color: #ffffff;
   border: none;
@@ -338,7 +346,10 @@ tbody tr:nth-child(even) {
   padding: 1.25rem;
   max-width: 25rem;
 }
-
+.reset-password form input,
+.reset-password form button,
+.forgot-password form input,
+.forgot-password form button,
 .colm-form .form-container input,
 .colm-form .form-container .btn-login {
   width: 100%;
@@ -347,38 +358,60 @@ tbody tr:nth-child(even) {
   vertical-align: middle;
   font-size: 1rem;
 }
+.btn {
+  vertical-align: middle;
+  height: auto;
+}
+.action-buttons .btn {
+  border: 1px solid white;
+}
+.reset-password form input,
+.forgot-password form input,
 .colm-form .form-container input {
   width: 95%;
 }
-
+.reset-password form input,
+.forgot-password form input,
 .colm-form .form-container input {
   border: 1px solid #dddfe2;
   color: #1d2129;
   padding: 0 0.5rem;
   outline: none;
 }
-
+.reset-password form input:focus,
+.forgot-password form input:focus,
 .colm-form .form-container input:focus {
   border-color: #1877f2;
   box-shadow: 0 0 0 2px #e7f3ff;
 }
-
+.btn,
+.reset-password form button,
+.forgot-password form button,
 .colm-form .form-container .btn-login {
   background-color: #810ca8;
   border: transparent solid 1px;
   border-radius: 6px;
   font-size: 1.25rem;
-  padding: 0 1rem;
+  padding: 0.5rem 1rem;
   color: #ffffff;
   font-weight: 700;
   cursor: pointer;
 }
+.btn,
+.reset-password form button,
+.forgot-password form button {
+  margin-top: 1rem;
+}
+.btn:hover,
+.reset-password form button:hover,
+.forgot-password form button:hover,
 .colm-form .form-container .btn-login:hover {
   background-color: white;
   color: #810ca8;
   border: #810ca8 solid 1px;
 }
-
+.reset-password form a,
+.forgot-password form a,
 .colm-form .form-container a {
   display: block;
   color: #1877f2;
@@ -387,7 +420,15 @@ tbody tr:nth-child(even) {
   padding: 10px 0 20px;
   border-bottom: 1px solid #dadde1;
 }
-
+.reset-password form a,
+.forgot-password form a {
+  border-top: 1px solid #dadde1;
+  border-bottom: none;
+  padding: 20px 0 5px;
+  margin-top: 20px;
+}
+.reset-password form a:hover,
+.forgot-password form a:hover,
 .colm-form .form-container a:hover {
   text-decoration: underline;
 }
@@ -408,4 +449,330 @@ tbody tr:nth-child(even) {
   background-color: #fff;
   color: #2d033b;
   border: #2d033b solid 1px;
+}
+.colm-form,
+.reset-password,
+.forgot-password {
+  display: grid;
+}
+.colm-form .loading,
+.reset-password .loading,
+.forgot-password .loading {
+  margin-top: 2rem;
+}
+
+/* User settings */
+
+.user-container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 2% 10% 0;
+  width: 80%;
+}
+@media only screen and (max-width: 800px) {
+  .user-container {
+    width: 100%;
+    margin: 0 0 2%;
+  }
+}
+.user-container .settings {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-top: 2rem;
+  background-color: rgba(129, 12, 168, 0.4);
+  border: none;
+  border-radius: 0.625em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+  padding: 1.25rem 0;
+  max-width: 80rem;
+}
+
+.user-container .settings .side-nav {
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  border-right: solid 0.5rem #2d033b;
+}
+.user-container .settings .side-nav div {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-container .settings .side-nav div .item {
+  padding: 1rem;
+  margin: 0;
+}
+.user-container .settings .side-nav div:nth-child(1) {
+  align-items: center;
+  font-size: 1.25rem;
+  text-align: center;
+}
+.user-container .settings .side-nav div:nth-child(2) {
+  align-items: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 1rem;
+}
+.user-container .settings .side-nav div:nth-child(2) #account {
+  width: 87%;
+  padding: none;
+  color: white;
+  text-align: center;
+  background-color: rgba(129, 12, 168, 1);
+  border-top: transparent solid 1px;
+  font-weight: 700;
+}
+.user-container .settings .side-nav div:nth-child(2) #password {
+  width: 87%;
+  padding: none;
+  color: rgba(129, 12, 168, 1);
+  text-align: center;
+  background-color: white;
+  border-bottom: transparent solid 1px;
+  font-weight: 700;
+}
+.user-container .settings .side-nav div:nth-child(2) #account:hover {
+  color: white !important;
+  background-color: rgba(129, 12, 168, 0.66) !important;
+  border-top: rgba(129, 12, 168, 1) solid 1px;
+}
+.user-container .settings .side-nav div:nth-child(2) #password:hover {
+  color: white !important;
+  background-color: rgba(129, 12, 168, 0.66) !important;
+  border-bottom: rgba(129, 12, 168, 1) solid 1px;
+  color: green;
+}
+
+.user-container .settings .userSettings,
+.user-container .settings .passwordSettings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+}
+
+.user-container .settings .passwordSettings h3,
+.user-container .settings .userSettings h3 {
+  text-align: center;
+}
+.user-container .settings .userSettings .centerFlex {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  width: 500px;
+}
+.user-container .settings .passwordSettings .centerFlex {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding: 0.5rem 0;
+  width: 500px;
+}
+.user-container .settings .passwordSettings .centerFlex div .item {
+  width: 400px;
+  padding: 0.75rem 1.25rem;
+  margin: 0.5rem 0.5rem;
+}
+
+@media only screen and (max-width: 900px) {
+  .user-container .settings .userSettings .centerFlex,
+  .user-container .settings .passwordSettings .centerFlex {
+    width: 200px;
+  }
+}
+@media only screen and (max-width: 900px) {
+  .user-container .settings .passwordSettings .centerFlex div .item {
+    width: 150px;
+  }
+}
+.item {
+  letter-spacing: 1px;
+}
+
+.user-container .settings .userSettings .centerFlex div .item {
+  padding: 0.75rem 1.25rem;
+  margin: 0.5rem 0.5rem;
+}
+
+.user-container .settings .passwordSettings .centerFlex div input,
+.user-container .settings .userSettings .centerFlex div input {
+  background-color: #f8f8f8;
+}
+.user-container
+  .settings
+  .userSettings
+  .centerFlex
+  div:nth-child(3)
+  .item:nth-child(2) {
+  padding: 0.75rem 1.25rem;
+  margin: 0 0.5rem 0.5rem;
+}
+.user-container .settings .userSettings .centerFlex div:nth-child(3) {
+  display: flex;
+  flex-direction: column;
+}
+.data-container .user-info .action-buttons .btn,
+.user-container .settings .passwordSettings div .btn,
+.user-container .settings .userSettings div:nth-child(3) .btn {
+  padding: 0.5rem 1rem;
+}
+.user-container .settings .passwordSettings .buttons,
+.user-container .settings .userSettings .buttons {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+@media only screen and (max-width: 900px) {
+  .data-container .user-info .action-buttons,
+  .user-container .settings .passwordSettings .buttons,
+  .user-container .settings .userSettings .buttons {
+    width: 200px;
+  }
+}
+#textArea {
+  width: 98%;
+  height: 6.25rem;
+  padding: 0.75rem 1.25rem;
+  box-sizing: border-box;
+  border: 2px solid #810ca8;
+  border-radius: 0.5rem;
+  background-color: #f8f8f8;
+  font-size: 1rem;
+  resize: none;
+}
+
+.avatar {
+  vertical-align: middle;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  padding: 0.5rem;
+}
+.logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 30%;
+  vertical-align: middle;
+  padding: 0.5rem;
+}
+.profile {
+  vertical-align: middle;
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+}
+.delete-user,
+#delete {
+  background-color: tomato;
+}
+.delete-user:hover,
+#delete:hover {
+  color: tomato;
+  background-color: white;
+  border: 1px solid tomato;
+}
+
+.data-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 50%;
+  margin: 4% 25% 0;
+  padding: 2rem;
+  border: 2px solid #810ca8;
+  border-radius: 1rem;
+  background-color: rgba(129, 12, 168, 0.4);
+}
+@media only screen and (max-width: 1100px) {
+  .data-container {
+    width: 90%;
+    margin: 2% 2% 0;
+    justify-content: space-around;
+    padding: 1rem;
+  }
+}
+@media only screen and (max-width: 800px) {
+  .data-container {
+    width: 90%;
+    margin: 2% 2.5% 0;
+  }
+}
+.data-container .user-info {
+  width: 70%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+}
+@media only screen and (max-width: 1100px) {
+  .data-container .user-info {
+    width: 90%;
+    justify-content: space-around;
+  }
+}
+.data-container .user-info .photo-name-email {
+  display: block;
+  width: 200px;
+  text-align: center;
+}
+.data-container .user-info .photo-name-email h3 {
+  word-break: break-all;
+  color: white;
+}
+.data-container .user-info .bio-text p {
+  display: block;
+  word-break: normal;
+  width: 230px;
+  margin: 0 0.5rem 0 1.5rem;
+  text-align: justify;
+}
+.data-container .user-info .bio-text p b {
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: white;
+}
+.data-container .action-buttons {
+  width: 160px;
+  max-height: 250px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+@media only screen and (max-width: 1100px) {
+  .data-container .action-buttons {
+    width: 90%;
+    margin: 2% 0 0;
+    padding: 1rem;
+    justify-content: space-evenly;
+  }
+}
+.data-container div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+@media only screen and (max-width: 1110px) {
+  .data-container .user-info .bio-text p {
+    width: 80%;
+    text-align: left;
+  }
+  .data-container .user-info .bio-text {
+    width: 600px;
+    justify-content: right;
+  }
+}
+.users-count {
+  font-size: 2rem;
+  margin: 1rem;
+  padding: 1rem;
+  text-align: center;
+  letter-spacing: 1px;
 }

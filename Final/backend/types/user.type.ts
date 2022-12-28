@@ -2,6 +2,7 @@ import { Request } from "express";
 
 export interface IUser extends Document {
   name: string;
+  bio?: string;
   email: string;
   photo?: string;
   role?: string;
@@ -21,3 +22,10 @@ export interface IUser extends Document {
 export interface TypedRequestBody<T> extends Request {
   user: T;
 }
+
+export type Email = {
+  to: string;
+  firstName: string;
+  url: string;
+  from: string;
+};

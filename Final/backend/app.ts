@@ -8,6 +8,7 @@ import rateLimit, { RateLimitRequestHandler } from "express-rate-limit";
 import helmet from "helmet";
 import * as mongoSanitize from "express-mongo-sanitize";
 import AppError from "./utils/AppError";
+import * as cors from "cors";
 
 process.on("uncaughtException", (err: Error) => {
   console.log("Uncaught Exception!  Shutting down...");
@@ -24,19 +25,25 @@ app.use(cookieParser());
 
 app.use(mongoSanitize());
 
-app.use(function (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "OPTIONS, POST, GET, PUT, DELETE");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
+// app.use(function (
+//   req: express.Request,
+//   res: express.Response,
+//   next: express.NextFunction
+// ) {
+//   res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+//   res.header(
+//     "Access-Control-Allow-Methods",
+//     "GET, POST, PATCH, PUT, DELETE, OPTIONS"
+//   );
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+//   );
+//   res.header("Access-Control-Allow-Credentials", "true");
+//   next();
+// });
+
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 // Limit requests from same API
 const limiter: RateLimitRequestHandler = rateLimit({
@@ -44,9 +51,9 @@ const limiter: RateLimitRequestHandler = rateLimit({
   windowMs: 60 * 60 * 1000,
   message: "Too many requests from this IP, please try again in an hour!",
 });
-//prvo ide ovo
+
 app.use("/", limiter);
-//pa ovo
+
 app.use("/weathers", weatherRouter);
 app.use("/users", userRouter);
 

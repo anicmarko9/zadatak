@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { filterString } from "../features/helper";
-import { getWeathers } from "../services/service";
+import { filterString, handleInput } from "../features/helper";
+import { getWeathers } from "../services/weather";
 import { COUNTRIES } from "../mocks/mock";
 import Results from "./Results";
 import React from "react";
-import { Weather } from "./../types/type";
+import { Weather } from "../types/weatherTypes";
 import Table from "./Table";
+import { InputData } from "../types/userTypes";
 
 const SearchBar = (): JSX.Element => {
   const [weathers, setWeathers] = useState<Weather[]>([]);
@@ -14,20 +15,14 @@ const SearchBar = (): JSX.Element => {
   const handleSubmit = async (e: {
     preventDefault: () => void;
   }): Promise<void> => {
-    e.preventDefault();
     setLoading(true);
+    e.preventDefault();
+    const input: InputData = handleInput("Weather");
 
-    // ------ Definisanje ulaza ------
-    const hardInputString: string = (
-      document.getElementById("cities") as HTMLInputElement
-    ).value;
-    const cities: string = filterString(hardInputString);
-    const countries: string = (
-      document.getElementById("countries") as HTMLInputElement
-    ).value;
-    // ------ Definisanje ulaza ------
-
-    const weathersArray: Weather[] = await getWeathers({ cities, countries });
+    const weathersArray: Weather[] = await getWeathers(
+      input.cities,
+      input.country
+    );
 
     setWeathers(weathersArray);
     setLoading(false);
@@ -39,7 +34,10 @@ const SearchBar = (): JSX.Element => {
       <form className="inputForm" onSubmit={handleSubmit}>
         <select name="countries" id="countries">
           {COUNTRIES.map(
-            (country: { code: string; cities: string[] }, index: number) => (
+            (
+              country: { code: string; cities: string[] },
+              index: number
+            ): JSX.Element => (
               <option key={index} value={country.code}>
                 {country.code}
               </option>

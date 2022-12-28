@@ -27,7 +27,7 @@ export const searchForecast = async (
   }
 
   uniqueCities.forEach((city: string) => {
-    all.push(resolvePromise(city, countries.toString().toUpperCase(), weather));
+    all.push(resolvePromise(city, countries.toString(), weather));
   });
   await Promise.all(all);
 
@@ -44,7 +44,7 @@ const resolvePromise = async (
   weather: City[]
 ): Promise<void> => {
   let start: number = new Date().getTime(); // pocetak [ms]
-  const city: City = await fetchCity(cityName, country);
+  const city: City = await fetchCity(cityName, country.toUpperCase());
   weather.push(city);
   if (city.temps.length > 0)
     console.log(

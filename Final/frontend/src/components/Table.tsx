@@ -16,23 +16,28 @@ const Table = ({
         </thead>
         <tbody>
           {countries.map(
-            (country: { code: string; cities: string[] }, index: number) => (
+            (
+              country: { code: string; cities: string[] },
+              index: number
+            ): JSX.Element => (
               <Fragment key={index}>
                 <tr>
                   <th>{country.code}</th>
-                  {country.cities.map((city: string, index: number) => (
-                    <Fragment key={index}>
-                      <td>
-                        {city}
-                        {/* Adding comma ", " if city is not the last element */}
-                        {country.cities.length - index === 1 ? (
-                          <span></span>
-                        ) : (
-                          <span>, </span>
-                        )}
-                      </td>
-                    </Fragment>
-                  ))}
+                  {country.cities.map(
+                    (city: string, index: number): JSX.Element => (
+                      <Fragment key={index}>
+                        <td>
+                          {city}
+                          {/* Adding comma ", " if city is not the last element */}
+                          {country.cities.length - index === 1 ? (
+                            <span></span>
+                          ) : (
+                            <span>, </span>
+                          )}
+                        </td>
+                      </Fragment>
+                    )
+                  )}
                 </tr>
               </Fragment>
             )

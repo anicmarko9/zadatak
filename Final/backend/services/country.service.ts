@@ -5,8 +5,6 @@ import { COUNTRIES } from "../../frontend/src/mocks/mock";
 import { Request, Response, NextFunction } from "express";
 import AppError from "../utils/AppError";
 
-//API_REST=https://restcountries.com/v3.1/alpha/
-
 export const searchCountryDetails = async (
   req: Request,
   res: Response,
@@ -18,7 +16,7 @@ export const searchCountryDetails = async (
     return next(
       new AppError("Code length should be equal to 2 characters!", 400)
     );
-  if (!COUNTRIES.some((el) => el.code === countryCode))
+  if (!COUNTRIES.some((el) => el.code === countryCode.toString().toUpperCase()))
     return next(new AppError("Country is unavailable!", 400));
 
   console.log("-------------------------------------------------------------");

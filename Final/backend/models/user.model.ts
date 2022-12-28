@@ -9,6 +9,7 @@ const userSchema: Schema<IUser> = new Schema<IUser>({
     type: String,
     required: [true, "Please tell us your name!"],
   },
+  bio: String,
   email: {
     type: String,
     required: [true, "Please provide your email"],
@@ -18,7 +19,8 @@ const userSchema: Schema<IUser> = new Schema<IUser>({
   },
   photo: {
     type: String,
-    default: "default.jpg",
+    default:
+      "https://res.cloudinary.com/dfptc3ila/image/upload/v1672134561/default_hmbqah.jpg",
   },
   role: {
     type: String,

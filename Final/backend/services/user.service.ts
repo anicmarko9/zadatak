@@ -81,7 +81,7 @@ export const getMyself = (
   res: Response,
   next: NextFunction
 ): void => {
-  req.params.id = req.user.id;
+  req.params.id = req.user._id;
   next();
 };
 
@@ -155,12 +155,12 @@ export const updateMyself = async (
   }
 
   // allow only name and email to be updated
-  const filteredBody: unknown = filterObj(req.body, "name", "email");
+  const filteredBody: unknown = filterObj(req.body, "name", "bio", "role");
   if (req.file) filteredBody["photo"] = req.file.filename;
 
   // update
   const updatedUser: HydratedDocument<IUser> = await User.findByIdAndUpdate(
-    req.user.id,
+    req.user._id,
     filteredBody,
     {
       new: true,
@@ -200,7 +200,7 @@ export const deleteMyself = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  await User.findByIdAndUpdate(req.user.id, { active: false });
+  await User.findByIdAndDelete(req.user._id, { active: false });
 
   res.status(204).json({
     status: "success",
