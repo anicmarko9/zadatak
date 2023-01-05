@@ -39,14 +39,14 @@ const Example = (): JSX.Element => {
   });
 
   const promoteUniqueUser = async (
-    id: string,
+    id: number,
     userRole: string
   ): Promise<void> => {
     let role: string;
     userRole === "admin" ? (role = "user") : (role = "admin");
     await promoteUser(id, role);
   };
-  const deleteUniqueUser = async (id: string): Promise<void> => {
+  const deleteUniqueUser = async (id: number): Promise<void> => {
     await suspendUser(id);
   };
 
@@ -91,21 +91,21 @@ const Example = (): JSX.Element => {
                   <div className="action-buttons">
                     {user.role === "admin" ? (
                       <button
-                        onClick={() => promoteUniqueUser(user._id, user.role)}
+                        onClick={() => promoteUniqueUser(user.id, user.role)}
                         className="delete-user btn"
                       >
                         Demote
                       </button>
                     ) : (
                       <button
-                        onClick={() => promoteUniqueUser(user._id, user.role)}
+                        onClick={() => promoteUniqueUser(user.id, user.role)}
                         className="give-admin btn"
                       >
                         Promote
                       </button>
                     )}
                     <button
-                      onClick={() => deleteUniqueUser(user._id)}
+                      onClick={() => deleteUniqueUser(user.id)}
                       className="delete-user btn"
                     >
                       Suspend

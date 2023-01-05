@@ -32,7 +32,7 @@ const LoginForm = (): JSX.Element => {
         <button type="submit" className="btn-login">
           Login
         </button>
-        <a href="login/forgotPassword">Forgotten password?</a>
+        <a href="login/forgot-password">Forgotten password?</a>
         <button type="button" onClick={createNewAcc} className="btn-new">
           Create new Account
         </button>

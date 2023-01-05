@@ -30,7 +30,6 @@ const ForgotPassword = (): JSX.Element => {
           id="email"
           placeholder="example@mail.com"
           autoFocus={true}
-          required
         />
         <div>
           <button type="submit">Send link to email</button>

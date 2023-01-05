@@ -6,7 +6,6 @@ import weatherRouter from "./routes/weather.route";
 import userRouter from "./routes/user.route";
 import rateLimit, { RateLimitRequestHandler } from "express-rate-limit";
 import helmet from "helmet";
-import * as mongoSanitize from "express-mongo-sanitize";
 import AppError from "./utils/AppError";
 import * as cors from "cors";
 
@@ -22,8 +21,6 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-app.use(mongoSanitize());
 
 // app.use(function (
 //   req: express.Request,

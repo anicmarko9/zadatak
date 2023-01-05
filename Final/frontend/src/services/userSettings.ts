@@ -15,7 +15,7 @@ export const updateUser = async (name: string, bio: string): Promise<void> => {
 const fetchUpdateUser = async (name: string, bio: string): Promise<User> => {
   try {
     const response: AxiosResponse = await axios.patch(
-      "http://localhost:5000/users/updateMe",
+      "http://localhost:5000/users/me",
       { name, bio },
       { withCredentials: true }
     );
@@ -38,7 +38,7 @@ export const deleteMe = async (): Promise<void> => {
 };
 const fetchDeleteMe = async (): Promise<void> => {
   try {
-    await axios.delete("http://localhost:5000/users/deleteMe", {
+    await axios.delete("http://localhost:5000/users/me", {
       withCredentials: true,
     });
     toast.info("User deleted.", {
@@ -50,14 +50,14 @@ const fetchDeleteMe = async (): Promise<void> => {
   }
 };
 
-export const promoteUser = async (id: string, role: string): Promise<void> => {
+export const promoteUser = async (id: number, role: string): Promise<void> => {
   await fetchPromotion(id, role);
   window.setTimeout(() => {
     window.location.reload();
   }, 1000);
 };
 
-const fetchPromotion = async (id: string, role: string): Promise<void> => {
+const fetchPromotion = async (id: number, role: string): Promise<void> => {
   try {
     await axios.patch(
       `http://localhost:5000/users/${id}`,
@@ -73,14 +73,14 @@ const fetchPromotion = async (id: string, role: string): Promise<void> => {
   }
 };
 
-export const suspendUser = async (id: string): Promise<void> => {
+export const suspendUser = async (id: number): Promise<void> => {
   await fetchDelete(id);
   window.setTimeout(() => {
     window.location.reload();
   }, 1000);
 };
 
-const fetchDelete = async (id: string): Promise<void> => {
+const fetchDelete = async (id: number): Promise<void> => {
   try {
     await axios.delete(`http://localhost:5000/users/${id}`, {
       withCredentials: true,

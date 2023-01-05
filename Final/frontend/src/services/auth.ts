@@ -5,11 +5,12 @@ import catchError from "./catchError";
 
 export const login = async (email: string, password: string): Promise<void> => {
   const data: User = await fetchLoginToken(email, password);
-  if (data)
+  if (data) {
+    window.localStorage.setItem("user", JSON.stringify(data));
     window.setTimeout(() => {
       window.location.assign("/weathers");
     }, 1000);
-  window.localStorage.setItem("user", JSON.stringify(data));
+  }
 };
 
 const fetchLoginToken = async (
@@ -69,11 +70,12 @@ export const signup = async (
     password,
     passwordConfirm
   );
-  if (data)
+  if (data) {
+    window.localStorage.setItem("user", JSON.stringify(data));
     window.setTimeout(() => {
       window.location.assign("/weathers");
     }, 1000);
-  window.localStorage.setItem("user", JSON.stringify(data));
+  }
 };
 
 const fetchSignupToken = async (
@@ -105,7 +107,7 @@ export const sendEmailResetToken = async (email: string): Promise<void> => {
 const fetchResetToken = async (email: string): Promise<void> => {
   try {
     const response: AxiosResponse = await axios.post(
-      "http://localhost:5000/users/forgotPassword",
+      "http://localhost:5000/users/forgot-password",
       { email }
     );
     toast.success(response.data.message, {
@@ -123,11 +125,12 @@ export const resetPassword = async (
   token: string
 ): Promise<void> => {
   const data: User = await fetchResetPassword(password, passwordConfirm, token);
-  if (data)
+  if (data) {
+    window.localStorage.setItem("user", JSON.stringify(data));
     window.setTimeout(() => {
       window.location.assign("/weathers");
     }, 1000);
-  window.localStorage.setItem("user", JSON.stringify(data));
+  }
 };
 
 const fetchResetPassword = async (
@@ -137,7 +140,7 @@ const fetchResetPassword = async (
 ): Promise<User> => {
   try {
     const response: AxiosResponse = await axios.patch(
-      `http://localhost:5000/users/resetPassword/${token}`,
+      `http://localhost:5000/users/reset-password/${token}`,
       { password, passwordConfirm },
       { withCredentials: true }
     );
@@ -174,7 +177,7 @@ const fetchUpdatePassword = async (
 ): Promise<User> => {
   try {
     const response: AxiosResponse = await axios.patch(
-      "http://localhost:5000/users/updateMyPassword",
+      "http://localhost:5000/users/password",
       { passwordCurrent, password, passwordConfirm },
       { withCredentials: true }
     );

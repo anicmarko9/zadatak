@@ -1,93 +1,174 @@
-import { HydratedDocument } from "mongoose";
-import { IUser, TypedRequestBody } from "../types/user.type";
+import User from "./../models/userPG.model";
+import { TypedRequestBody } from "../types/user.type";
 import { Response, NextFunction } from "express";
 import {
   createOne,
   deleteMyself,
   deleteOne,
   getAll,
-  getMyself,
   getOne,
   resizePhoto,
   updateMyself,
   updateOne,
-  uploadPhoto,
+  upload,
 } from "../services/user.service";
+import AppError from "../utils/AppError";
 
 export async function getAllUsers(
-  req: TypedRequestBody<HydratedDocument<IUser>>,
+  req: TypedRequestBody<User>,
   res: Response,
   next: NextFunction
 ) {
-  await getAll(req, res, next);
+  const users: User[] = await getAll();
+  res.status(200).json({
+    status: "success",
+    results: users.length,
+    data: {
+      users,
+    },
+  });
 }
 
 export async function createUser(
-  req: TypedRequestBody<HydratedDocument<IUser>>,
+  req: TypedRequestBody<User>,
   res: Response,
   next: NextFunction
 ) {
-  await createOne(req, res, next);
-}
-
-export async function getUser(
-  req: TypedRequestBody<HydratedDocument<IUser>>,
-  res: Response,
-  next: NextFunction
-) {
-  await getOne(req, res, next);
+  const { name, email, password, passwordConfirm, role } = req.body;
+  try {
+    const newUser: User = await createOne(
+      name,
+      email,
+      password,
+      passwordConfirm,
+      role
+    );
+    res.status(201).json({
+      status: "success",
+      data: {
+        user: newUser,
+      },
+    });
+  } catch (err) {
+    if (err.isOperational) {
+      next(err);
+    } else {
+      next(new AppError(err.errors[0].message, 400));
+    }
+  }
 }
 
 export async function updateUser(
-  req: TypedRequestBody<HydratedDocument<IUser>>,
+  req: TypedRequestBody<User>,
   res: Response,
   next: NextFunction
 ) {
-  await updateOne(req, res, next);
+  const data: User = req.body;
+  const { id } = req.params;
+  try {
+    const user: User = await updateOne(data, id);
+    res.status(200).json({
+      status: "success",
+      data: {
+        user,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
 }
 
 export async function deleteUser(
-  req: TypedRequestBody<HydratedDocument<IUser>>,
+  req: TypedRequestBody<User>,
   res: Response,
   next: NextFunction
 ) {
-  await deleteOne(req, res, next);
+  const { id } = req.params;
+  try {
+    await deleteOne(parseInt(id));
+    res.status(204).json({
+      status: "success",
+      data: null,
+    });
+  } catch (err) {
+    next(err);
+  }
 }
 export async function deleteMe(
-  req: TypedRequestBody<HydratedDocument<IUser>>,
+  req: TypedRequestBody<User>,
   res: Response,
   next: NextFunction
 ) {
-  await deleteMyself(req, res, next);
+  await deleteMyself(req.user.id);
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
 }
 export function getMe(
-  req: TypedRequestBody<HydratedDocument<IUser>>,
+  req: TypedRequestBody<User>,
   res: Response,
   next: NextFunction
 ) {
-  getMyself(req, res, next);
+  req.params.id = req.user.id.toString();
+  next();
 }
 
-export async function updateMe(
-  req: TypedRequestBody<HydratedDocument<IUser>>,
+export async function getUser(
+  req: TypedRequestBody<User>,
   res: Response,
   next: NextFunction
 ) {
-  await updateMyself(req, res, next);
+  const { id } = req.params;
+  try {
+    const user: User = await getOne(parseInt(id));
+    res.status(200).json({
+      status: "success",
+      data: {
+        user,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
 }
 
 export function uploadUserPhoto(
-  req: TypedRequestBody<HydratedDocument<IUser>>,
+  req: TypedRequestBody<User>,
   res: Response,
   next: NextFunction
 ) {
-  uploadPhoto(req, res, next);
+  upload.single("photo");
+  next();
 }
 
 export async function resizeUserPhoto(
-  req: TypedRequestBody<HydratedDocument<IUser>>,
+  req: TypedRequestBody<User>,
   res: Response,
   next: NextFunction
 ) {
-  await resizePhoto(req, res, next);
+  const file: Express.Multer.File = req.file;
+  await resizePhoto(file);
+  next();
+}
+
+export async function updateMe(
+  req: TypedRequestBody<User>,
+  res: Response,
+  next: NextFunction
+) {
+  const data: User = req.body;
+  const file: Express.Multer.File = req.file;
+  const id: number = req.user.id;
+  try {
+    const updatedUser = await updateMyself(data, file, id);
+    res.status(200).json({
+      status: "success",
+      data: {
+        user: updatedUser,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
 }

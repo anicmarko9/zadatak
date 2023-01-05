@@ -32,14 +32,12 @@ const ResetPassword = (): JSX.Element => {
           id="password"
           placeholder="New password"
           autoFocus={true}
-          required
         />
         <input
           type="password"
           id="passwordConfirm"
           placeholder="Confirm password"
           autoFocus={true}
-          required
         />
         <div>
           <button type="submit">Reset password</button>

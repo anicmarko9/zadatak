@@ -7,20 +7,22 @@ router.post("/signup", authController.signupUser);
 router.post("/login", authController.loginUser);
 router.get("/logout", authController.logoutUser);
 
-router.post("/forgotPassword", authController.forgotPasswordLink);
-router.patch("/resetPassword/:token", authController.resetPasswordLink);
+router.post("/forgot-password", authController.forgotPasswordLink);
+router.patch("/reset-password/:token", authController.resetPasswordLink);
 
 router.use(authController.protectUser);
 
-router.get("/me", userController.getMe, userController.getUser);
-router.patch("/updateMyPassword", authController.updateMyPassword);
-router.patch(
-  "/updateMe",
-  userController.uploadUserPhoto,
-  userController.resizeUserPhoto,
-  userController.updateMe
-);
-router.delete("/deleteMe", userController.deleteMe);
+router.patch("/password", authController.updateMyPassword);
+
+router
+  .route("/me")
+  .get(userController.getMe, userController.getUser)
+  .patch(
+    userController.uploadUserPhoto,
+    userController.resizeUserPhoto,
+    userController.updateMe
+  )
+  .delete(userController.deleteMe);
 
 router.use(authController.restrictToUser);
 

@@ -1,19 +1,16 @@
 import { City } from "./../types/weather.type";
 import axios from "axios";
 import { COUNTRIES } from "./../../frontend/src/mocks/mock";
-import { Request, Response, NextFunction } from "express";
 
 const APIKEY: string = process.env.OPEN_WEATHER_KEY;
 const API: string = process.env.API;
 
 export const searchForecast = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  const { cities, countries } = req.query;
+  cities: string,
+  countries: string
+): Promise<City[]> => {
   //remove duplicates in an array
-  const citiesArray: string[] = cities.toString().split(", ");
+  const citiesArray: string[] = cities.split(", ");
   const uniqueCities: string[] = [...new Set(citiesArray)];
 
   let all: Promise<void>[] = [];
@@ -25,17 +22,14 @@ export const searchForecast = async (
       "-------------------------------------------------------------"
     );
   }
-
   uniqueCities.forEach((city: string) => {
-    all.push(resolvePromise(city, countries.toString(), weather));
+    all.push(resolvePromise(city, countries, weather));
   });
   await Promise.all(all);
 
   if (uniqueCities.length > 1)
     console.timeEnd("\nFetched all cities concurrently in");
-  res.status(200).json({
-    weather,
-  });
+  return weather;
 };
 
 const resolvePromise = async (

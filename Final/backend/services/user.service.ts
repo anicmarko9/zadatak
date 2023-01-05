@@ -1,15 +1,13 @@
 import * as multer from "multer";
 import * as sharp from "sharp";
 import AppError from "../utils/AppError";
-import User from "../models/user.model";
-import { HydratedDocument } from "mongoose";
-import { IUser, TypedRequestBody } from "../types/user.type";
-import { NextFunction, Response } from "express";
+import User from "../models/userPG.model";
+import { TypedRequestBody } from "../types/user.type";
 
 const multerStorage: multer.StorageEngine = multer.memoryStorage();
 
 const multerFilter = (
-  req: TypedRequestBody<HydratedDocument<IUser>>,
+  req: TypedRequestBody<User>,
   file: { mimetype: string },
   cb: (arg0: Error, arg1: boolean) => void
 ): void => {
@@ -20,114 +18,59 @@ const multerFilter = (
   }
 };
 
-const upload: multer.Multer = multer({
+export const upload: multer.Multer = multer({
   storage: multerStorage,
   fileFilter: multerFilter,
 });
 
-export const uploadPhoto = upload.single("photo");
-
 // needs to be edited from static to dynamic
-export const resizePhoto = async (
-  req: TypedRequestBody<HydratedDocument<IUser>>,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  if (!req.file) return next();
+export const resizePhoto = async (file: Express.Multer.File): Promise<void> => {
+  if (!file) return;
 
-  req.file.filename = `user-11.jpg`;
+  file.filename = `user-11.jpg`;
 
-  await sharp(req.file.buffer)
+  await sharp(file.buffer)
     .resize(500, 500)
     .toFormat("jpeg")
     .jpeg({ quality: 90 })
-    .toFile(`public/users/${req.file.filename}`);
-
-  next();
+    .toFile(`public/users/${file.filename}`);
 };
 
-export const getAll = async (
-  req: TypedRequestBody<HydratedDocument<IUser>>,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  const users: HydratedDocument<IUser>[] = await User.find();
-  res.status(200).json({
-    status: "success",
-    results: users.length,
-    data: {
-      users,
-    },
-  });
+export const getAll = async (): Promise<User[]> => {
+  return await User.scope("withoutPassword").findAll();
 };
 
 export const createOne = async (
-  req: TypedRequestBody<HydratedDocument<IUser>>,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  const newUser: HydratedDocument<IUser> = await User.create(req.body);
-
-  res.status(201).json({
-    status: "success",
-    data: {
-      user: newUser,
-    },
+  name: string,
+  email: string,
+  password: string,
+  passwordConfirm: string,
+  role: string
+): Promise<User> => {
+  return await User.scope("withoutPassword").create({
+    name,
+    email,
+    password,
+    passwordConfirm,
+    role,
   });
 };
 
-export const getMyself = (
-  req: TypedRequestBody<HydratedDocument<IUser>>,
-  res: Response,
-  next: NextFunction
-): void => {
-  req.params.id = req.user._id;
-  next();
-};
-
-export const getOne = async (
-  req: TypedRequestBody<HydratedDocument<IUser>>,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  const user: HydratedDocument<IUser> = await User.findById(req.params.id);
+export const getOne = async (id: number): Promise<User> => {
+  const user: User = await User.scope("withoutPassword").findByPk(id);
 
   if (!user) {
-    return next(new AppError("No user found with that ID", 404));
+    throw new AppError("No user found with that ID", 404);
   }
-
-  res.status(200).json({
-    status: "success",
-    data: {
-      user,
-    },
-  });
+  return user;
 };
 
-export const updateOne = async (
-  req: TypedRequestBody<HydratedDocument<IUser>>,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  const user: HydratedDocument<IUser> = await User.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
-
-  if (!user) {
-    return next(new AppError("No user found with that ID", 404));
-  }
-
-  res.status(200).json({
-    status: "success",
-    data: {
-      user,
-    },
-  });
+export const updateOne = async (data: User, id: string): Promise<User> => {
+  const user: User = await User.scope("withoutPassword").findByPk(id);
+  if (!user) throw new AppError("No user found with that ID", 404);
+  if (data.role) user.role = data.role;
+  await user.save();
+  return user;
 };
 
 const filterObj = (obj: unknown, ...allowedFields: string[]): unknown => {
@@ -140,70 +83,40 @@ const filterObj = (obj: unknown, ...allowedFields: string[]): unknown => {
 };
 
 export const updateMyself = async (
-  req: TypedRequestBody<HydratedDocument<IUser>>,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+  data: User,
+  file: Express.Multer.File,
+  id: number
+): Promise<User> => {
   // error for password update
-  if (req.body.password || req.body.passwordConfirm) {
-    return next(
-      new AppError(
-        "This route is not for password updates. Please use /updateMyPassword.",
-        400
-      )
+  if (data.password || data.passwordConfirm) {
+    throw new AppError(
+      "This route is not for password updates. Please use /updateMyPassword.",
+      400
     );
   }
 
   // allow only name and email to be updated
-  const filteredBody: unknown = filterObj(req.body, "name", "bio", "role");
-  if (req.file) filteredBody["photo"] = req.file.filename;
+  const filteredBody: unknown = filterObj(data, "name", "bio", "role");
+  if (file) filteredBody["photo"] = file.filename;
 
   // update
-  const updatedUser: HydratedDocument<IUser> = await User.findByIdAndUpdate(
-    req.user._id,
-    filteredBody,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
-
-  res.status(200).json({
-    status: "success",
-    data: {
-      user: updatedUser,
-    },
-  });
+  const updatedUser: User = await User.scope("withoutPassword").findByPk(id);
+  if (filteredBody["name"]) updatedUser.name = filteredBody["name"];
+  if (filteredBody["bio"]) updatedUser.bio = filteredBody["bio"];
+  if (filteredBody["role"]) updatedUser.role = filteredBody["role"];
+  await updatedUser.save();
+  return updatedUser;
 };
 
-export const deleteOne = async (
-  req: TypedRequestBody<HydratedDocument<IUser>>,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  const user: HydratedDocument<IUser> = await User.findByIdAndDelete(
-    req.params.id
-  );
-
+export const deleteOne = async (id: number): Promise<void> => {
+  const user: User = await User.findByPk(id);
   if (!user) {
-    return next(new AppError("No user found with that ID", 404));
+    throw new AppError("No user found with that ID", 404);
   }
-
-  res.status(204).json({
-    status: "success",
-    data: null,
-  });
+  await user.destroy();
 };
 
-export const deleteMyself = async (
-  req: TypedRequestBody<HydratedDocument<IUser>>,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  await User.findByIdAndDelete(req.user._id, { active: false });
-
-  res.status(204).json({
-    status: "success",
-    data: null,
-  });
+export const deleteMyself = async (id: number): Promise<void> => {
+  const user: User = await User.findByPk(id);
+  await user.destroy();
 };

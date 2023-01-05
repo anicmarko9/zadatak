@@ -1,10 +1,10 @@
 export type User = {
+  id: number;
   name: string;
   bio?: string;
   email: string;
   photo: string;
   role: string;
-  _id: string;
 };
 
 export type InputData = {

@@ -2,43 +2,33 @@ import { City, Country } from "../types/weather.type";
 import axios from "axios";
 import { fetchCity } from "./weather.service";
 import { COUNTRIES } from "../../frontend/src/mocks/mock";
-import { Request, Response, NextFunction } from "express";
 import AppError from "../utils/AppError";
 
 export const searchCountryDetails = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  const { countryCode } = req.query;
-
+  countryCode: string
+): Promise<Country> => {
   if (countryCode.length !== 2)
-    return next(
-      new AppError("Code length should be equal to 2 characters!", 400)
-    );
-  if (!COUNTRIES.some((el) => el.code === countryCode.toString().toUpperCase()))
-    return next(new AppError("Country is unavailable!", 400));
+    throw new AppError("Code length should be equal to 2 characters!", 400);
+  if (!COUNTRIES.some((el) => el.code === countryCode.toUpperCase()))
+    throw new AppError("Country is unavailable!", 400);
 
   console.log("-------------------------------------------------------------");
   console.time("\nFetched all data synchronously in");
   let start: number = new Date().getTime();
 
-  const country: Country = await fetchCountry(countryCode.toString());
+  const country: Country = await fetchCountry(countryCode);
 
   console.log(
     `Fetched ${country.name} in: ${new Date().getTime() - start}ms` // kraj [ms]
   );
   const city: City = await fetchCity(
     country.capitalCity,
-    countryCode.toString().toUpperCase()
+    countryCode.toUpperCase()
   );
   country.forecast = city;
   console.timeEnd("\nFetched all data synchronously in");
 
-  res.status(200).json({
-    status: "success",
-    country,
-  });
+  return country;
 };
 
 const fetchCountry = async (countryCode: string) => {

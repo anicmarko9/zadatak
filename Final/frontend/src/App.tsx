@@ -24,8 +24,8 @@ function App(): JSX.Element {
           <Route path="/weathers/:countryCode" element={<Details />} />
           <Route path="/weathers" element={<SearchBar />} />
           <Route path="/login" element={<LoginForm />} />
-          <Route path="/login/forgotPassword" element={<ForgotPassword />} />
-          <Route path="/resetPassword/:token" element={<ResetPassword />} />
+          <Route path="/login/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/signup" element={<SignupForm />} />
           <Route path="/me" element={<UserSettings />} />
           <Route path="/admin" element={<AdminPanel />} />

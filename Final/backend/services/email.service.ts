@@ -2,11 +2,11 @@ import * as pug from "pug";
 import * as nodemailer from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 import { htmlToText } from "html-to-text";
-import { HydratedDocument } from "mongoose";
-import { Email, IUser } from "../types/user.type";
+import User from "./../models/userPG.model";
+import { Email } from "../types/user.type";
 
 export const sendEmail = async (
-  user: HydratedDocument<IUser>,
+  user: User,
   url: string,
   type: string
 ): Promise<void> => {
