@@ -1,6 +1,6 @@
 import * as crypto from "crypto";
 import AppError from "../utils/AppError";
-import User from "../models/userPG.model";
+import User from "../models/relationships.model";
 import { Op } from "sequelize";
 
 export const authSignup = async (

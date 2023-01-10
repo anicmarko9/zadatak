@@ -1,9 +1,10 @@
-import { Sequelize } from "sequelize";
+import { QueryInterface, Sequelize } from "sequelize";
+import { Umzug, SequelizeStorage, MigrationMeta } from "umzug";
 
 export const sequelize: Sequelize = new Sequelize(
-  process.env.DATABASE_LOCAL,
-  process.env.DATABASE_USERNAME,
-  process.env.DATABASE_PASSWORD,
+  "users",
+  "postgres",
+  "qwerty123",
   {
     host: "localhost",
     dialect: "postgres",
@@ -11,12 +12,37 @@ export const sequelize: Sequelize = new Sequelize(
   }
 );
 
-export const connectToDatabase = async (): Promise<void> => {
+const migrationConf = {
+  migrations: {
+    glob: "models/migrations/*.ts",
+  },
+  storage: new SequelizeStorage({ sequelize, tableName: "migrations" }),
+  context: sequelize.getQueryInterface(),
+  logger: console,
+};
+
+const runMigrations = async () => {
+  const migrator = new Umzug(migrationConf);
+  const migrations = await migrator.up();
+  console.log("Migrations up to date", {
+    files: migrations.map((mig) => mig.name),
+  });
+};
+
+export const rollbackMigration = async () => {
+  await sequelize.authenticate();
+  const migrator = new Umzug(migrationConf);
+  await migrator.down();
+};
+
+export const connectToDatabase = async () => {
   try {
     await sequelize.authenticate();
-    console.log("Connected to the database.");
+    await runMigrations();
+    console.log("database connected");
   } catch (err) {
-    console.log("Failed to connect to the database.");
+    console.log("connecting database failed");
+    console.error(err);
     return process.exit(1);
   }
 

@@ -1,4 +1,4 @@
-import User from "./../models/userPG.model";
+import User from "./../models/relationships.model";
 import { TypedRequestBody } from "../types/user.type";
 import { Response, NextFunction } from "express";
 import {

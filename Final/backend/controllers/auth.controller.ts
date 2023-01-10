@@ -1,6 +1,6 @@
 import { Response, NextFunction } from "express";
 import { TypedRequestBody } from "../types/user.type";
-import User from "./../models/userPG.model";
+import User from "./../models/relationships.model";
 import {
   login,
   logout,

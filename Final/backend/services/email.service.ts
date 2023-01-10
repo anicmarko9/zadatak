@@ -2,7 +2,7 @@ import * as pug from "pug";
 import * as nodemailer from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 import { htmlToText } from "html-to-text";
-import User from "./../models/userPG.model";
+import User from "./../models/relationships.model";
 import { Email } from "../types/user.type";
 
 export const sendEmail = async (

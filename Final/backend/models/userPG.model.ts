@@ -106,7 +106,6 @@ User.init(
   },
   {
     sequelize,
-    underscored: true,
     timestamps: false,
     modelName: "user",
     scopes: {
@@ -163,9 +162,5 @@ User.prototype.createPasswordResetToken = function (): string {
 
   return resetToken;
 };
-
-(async () => {
-  await User.sync();
-})();
 
 export default User;

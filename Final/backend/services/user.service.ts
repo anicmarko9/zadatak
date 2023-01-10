@@ -1,7 +1,7 @@
 import * as multer from "multer";
 import * as sharp from "sharp";
 import AppError from "../utils/AppError";
-import User from "../models/userPG.model";
+import User from "../models/relationships.model";
 import { TypedRequestBody } from "../types/user.type";
 
 const multerStorage: multer.StorageEngine = multer.memoryStorage();

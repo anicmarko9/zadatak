@@ -1,6 +1,6 @@
 import * as jwt from "jsonwebtoken";
 import AppError from "../utils/AppError";
-import User from "./../models/userPG.model";
+import User from "./../models/relationships.model";
 import { TypedRequestBody } from "../types/user.type";
 import { NextFunction, Response } from "express";
 import { sendEmail } from "./../services/email.service";
