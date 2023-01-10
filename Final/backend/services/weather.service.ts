@@ -1,27 +1,35 @@
 import { City } from "./../types/weather.type";
 import axios from "axios";
+import { COUNTRIES } from "./../../frontend/src/mocks/mock";
 
 const APIKEY: string = process.env.OPEN_WEATHER_KEY;
 const API: string = process.env.API;
 
-export const search = async (
-  cities: string[],
-  country: string
-): Promise<any> => {
+export const searchForecast = async (
+  cities: string,
+  countries: string
+): Promise<City[]> => {
+  //remove duplicates in an array
+  const citiesArray: string[] = cities.split(", ");
+  const uniqueCities: string[] = [...new Set(citiesArray)];
+
   let all: Promise<void>[] = [];
   let weather: City[] = [];
 
-  console.log();
-  console.time("\nFetched all cities concurrently in");
-  // fetch data for one or more cities and store them into an array: "all"
-  cities.forEach((city: string) => {
-    all.push(resolvePromise(city, country, weather));
+  if (uniqueCities.length > 1) {
+    console.time("\nFetched all cities concurrently in");
+    console.log(
+      "-------------------------------------------------------------"
+    );
+  }
+  uniqueCities.forEach((city: string) => {
+    all.push(resolvePromise(city, countries, weather));
   });
   await Promise.all(all);
-  console.timeEnd("\nFetched all cities concurrently in");
-  return {
-    weather,
-  };
+
+  if (uniqueCities.length > 1)
+    console.timeEnd("\nFetched all cities concurrently in");
+  return weather;
 };
 
 const resolvePromise = async (
@@ -30,15 +38,25 @@ const resolvePromise = async (
   weather: City[]
 ): Promise<void> => {
   let start: number = new Date().getTime(); // pocetak [ms]
-  const city: City = await fetchCity(cityName, country);
+  const city: City = await fetchCity(cityName, country.toUpperCase());
   weather.push(city);
-  console.log(
-    `Fetched ${cityName} in: ${new Date().getTime() - start}ms` // kraj [ms]
-  );
+  if (city.temps.length > 0)
+    console.log(
+      `Fetched ${cityName} in: ${new Date().getTime() - start}ms` // kraj [ms]
+    );
 };
 
-const fetchCity = async (cityName: string, country: string): Promise<City> => {
+export const fetchCity = async (
+  cityName: string,
+  country: string
+): Promise<City> => {
   try {
+    if (
+      !COUNTRIES.some(
+        (el) => el.cities.includes(cityName) && el.code === country
+      )
+    )
+      throw "unavailable";
     const res = await axios.get(
       `${API}data/2.5/forecast?q=${cityName},${country}&units=metric&appid=${APIKEY}`
     );
@@ -49,21 +67,26 @@ const fetchCity = async (cityName: string, country: string): Promise<City> => {
     const days: string[] = res.data.list.map(
       (el: { dt_txt: string }) => el.dt_txt
     );
-    const city: City = {
+    const img: string[] = res.data.list.map(
+      (el: { weather: { icon: string }[] }) => el.weather[0].icon.slice(0, 2)
+    );
+    var city: City = {
       name,
       temps,
       days,
+      img,
     };
-    return city;
   } catch (err) {
     console.log(
-      `City: [${cityName}] isn't available, or it is not in this country: [${country}].\n`
+      `City: [${cityName}] is ${err}, or it is not in this country: [${country}].`
     );
-    const city: City = {
+    var city: City = {
       name: cityName,
       temps: [],
       days: [],
+      img: [],
     };
+  } finally {
     return city;
   }
 };
